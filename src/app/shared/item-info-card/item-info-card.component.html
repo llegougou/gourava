@@ -1,0 +1,28 @@
+<div class="p-4 rounded-lg bg-backgroundAnti shadow-lg border border-primary mb-2">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="font-bold flex-1">{{ title }}</h3>
+      <div *ngIf="showButtons" class="flex space-x-2">
+        <button class="w-9 h-9 rounded-full bg-primaryLight flex items-center justify-center">
+          <fa-icon [icon]="'pen'" class="text-neutral"></fa-icon>
+        </button>
+        <button class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
+          <fa-icon [icon]="'trash'" class="text-neutral"></fa-icon>
+        </button>
+      </div>
+    </div>
+  
+    <div class="flex justify-center space-x-2 my-2">
+      <span *ngFor="let tag of tags" class="rounded-full bg-accent px-3 py-1 text-sm text-black">{{ tag }}</span>
+    </div>
+  
+    <div *ngFor="let criteria of criteriaRatings" class="flex justify-between items-center py-1">
+      <span class="text-sm font-medium mr-2">{{ criteria.name }}</span>
+      <div class="flex items-center space-x-1">
+        <ng-container *ngFor="let star of renderStars(criteria.rating)">
+          <fa-icon *ngIf="star === 'full'" [icon]="'star'" class="text-secondary w-4 h-4"></fa-icon>
+          <fa-icon *ngIf="star === 'empty'" [icon]="'star'" class="text-neutral w-4 h-4"></fa-icon>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  

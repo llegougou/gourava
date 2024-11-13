@@ -1,0 +1,24 @@
+<div class="space-y-4 p-4 bg-background min-h-screen">
+    <gourava-item-info-card
+      [title]="'Spaghetti Bolognese'"
+      [tags]="['Italian', 'Pasta', 'Main Dish']"
+      [criteriaRatings]="[
+        { name: 'Taste', rating: 9 },
+        { name: 'Presentation', rating: 4 },
+        { name: 'Value for Money', rating: 5 }
+      ]"
+      [showButtons]="true"
+    />
+    
+    <gourava-item-info-card
+      [title]="'Spaghetti Bolognese'"
+      [tags]="['Italian', 'Pasta', 'Main Dish']"
+      [criteriaRatings]="[
+        { name: 'Taste', rating: 4 },
+        { name: 'Presentation', rating: 4 },
+        { name: 'Value for Money', rating: 5 }
+      ]"
+      [showButtons]="false"
+    />
+
+  </div>

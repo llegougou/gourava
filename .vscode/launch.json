@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "java",
+      "name": "GouravaBackendApplication",
+      "request": "launch",
+      "mainClass": "fr.legouloan.gourava_backend.GouravaBackendApplication",
+      "projectName": "gourava-backend"
+    },
+    {
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",
