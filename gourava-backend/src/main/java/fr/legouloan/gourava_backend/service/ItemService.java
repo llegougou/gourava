@@ -9,7 +9,6 @@ import fr.legouloan.gourava_backend.repository.CriteriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ItemService {
@@ -22,20 +21,18 @@ public class ItemService {
     @Autowired
     private CriteriaRepository criteriaRepository;
 
-    public Item addItem(String title, List<String> tags, List<Criteria> criteriaRatings) {
+    public Item addItem(String title, List<Tag> tags, List<Criteria> criterias) {
         Item item = new Item();
         item.setTitle(title);
-        
+
         itemRepository.save(item);
-    
-        for (String tag : tags) {
-            Tag newTag = new Tag();
-            newTag.setTag(tag);
-            newTag.setItem(item);
-            tagRepository.save(newTag);
+
+        for (Tag tag : tags) {
+            tag.setItem(item);
+            tagRepository.save(tag);
         }
-    
-        for (Criteria criteria : criteriaRatings) {
+
+        for (Criteria criteria : criterias) {
             criteria.setItem(item);
             criteriaRepository.save(criteria);
         }
@@ -50,37 +47,40 @@ public class ItemService {
         itemRepository.deleteById(id);
     }
 
-    public Item updateItem(Long id, String title, List<String> tags, List<Criteria> criteriaRatings) {
-        Optional<Item> itemOpt = itemRepository.findById(id);
-        if (itemOpt.isPresent()) {
-            Item item = itemOpt.get();
-            item.setTitle(title);
-            itemRepository.save(item);
-
-            tagRepository.deleteAll(item.getTags());
-            for (String tag : tags) {
-                Tag newTag = new Tag();
-                newTag.setTag(tag);
-                newTag.setItem(item);
-                tagRepository.save(newTag);
-            }
-
-            criteriaRepository.deleteAll(item.getCriteriaRatings());
-            for (Criteria criteria : criteriaRatings) {
-                criteria.setItem(item);
-                criteriaRepository.save(criteria);
-            }
-            return item;
-        } else {
-            return null;
+    public Item updateItem(Long id, String title, List<Tag> tags, List<Criteria> criterias) {
+        Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found"));
+    
+        item.setTitle(title);
+        itemRepository.save(item); 
+    
+        tagRepository.deleteAll(item.getTags()); 
+        for (Tag tag : tags) {
+            tag.setItem(item);
+            tagRepository.save(tag);
         }
+    
+        criteriaRepository.deleteAll(item.getCriterias());  
+        for (Criteria criteria : criterias) {
+            criteria.setItem(item);
+            criteriaRepository.save(criteria);  
+        }
+    
+        return item; 
     }
 
-    public List<Object[]> getTagsUsageCount(int limit) {
-        return tagRepository.findTagsUsageCount(limit);
+    public List<Object[]> getTagUsageCount(int limit) {
+        return tagRepository.findTagUsageCount(limit);
+    }
+
+    public List<Object[]> getTagUsageCountRandom(int limit){
+        return tagRepository.findTagUsageCountRandom(limit);
     }
 
     public List<Object[]> getCriteriaUsageCount(int limit) {
         return criteriaRepository.findCriteriaUsageCount(limit);
+    }
+
+    public List<Object[]> getCriteriaUsageCountRandom(int limit) {
+        return criteriaRepository.findCriteriaUsageCountRandom(limit);
     }
 }

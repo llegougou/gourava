@@ -10,11 +10,20 @@ import java.util.List;
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
     @Query(value = """
-        SELECT t.tag, COUNT(t.tag) AS usage_count 
-        FROM tags t 
-        GROUP BY t.tag 
-        ORDER BY usage_count DESC 
-        LIMIT :limit
-        """, nativeQuery = true)
-    List<Object[]> findTagsUsageCount(@Param("limit") int limit);
+                    SELECT t.name, COUNT(t.name) AS usage_count
+            FROM tags t
+            GROUP BY t.name
+            ORDER BY RAND()
+            LIMIT ?
+                """, nativeQuery = true)
+    List<Object[]> findTagUsageCountRandom(@Param("limit") int limit);
+
+    @Query(value = """
+                    SELECT t.name, COUNT(t.name) AS usage_count
+            FROM tags t
+            GROUP BY t.name
+            ORDER BY usage_count DESC
+            LIMIT ?
+                """, nativeQuery = true)
+    List<Object[]> findTagUsageCount(@Param("limit") int limit);
 }

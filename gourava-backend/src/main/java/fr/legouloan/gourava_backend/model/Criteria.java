@@ -1,5 +1,7 @@
 package fr.legouloan.gourava_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +16,7 @@ public class Criteria {
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
+    @JsonBackReference
     private Item item;
 
     public Long getId() {

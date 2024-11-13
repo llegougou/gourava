@@ -1,5 +1,7 @@
 package fr.legouloan.gourava_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -9,10 +11,11 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String tag;
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
+    @JsonBackReference
     private Item item;
 
     public Long getId() {
@@ -31,11 +34,11 @@ public class Tag {
         this.item = item;
     }
 
-    public String getTag() {
-        return tag;
+    public String getName() {
+        return name;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setName(String name) {
+        this.name = name;
     }
 }
