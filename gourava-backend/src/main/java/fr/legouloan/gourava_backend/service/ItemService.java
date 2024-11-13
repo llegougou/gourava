@@ -49,17 +49,17 @@ public class ItemService {
 
     public Item updateItem(Long id, String title, List<Tag> tags, List<Criteria> criterias) {
         Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found"));
-    
+
         item.setTitle(title);
-        itemRepository.save(item); 
-    
-        tagRepository.deleteAll(item.getTags()); 
+        item.getTags().clear();
+        item.getCriterias().clear();
+        itemRepository.save(item);
+
         for (Tag tag : tags) {
             tag.setItem(item);
             tagRepository.save(tag);
         }
     
-        criteriaRepository.deleteAll(item.getCriterias());  
         for (Criteria criteria : criterias) {
             criteria.setItem(item);
             criteriaRepository.save(criteria);  
