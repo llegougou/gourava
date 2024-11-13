@@ -25,16 +25,16 @@ public class ItemService {
     public Item addItem(String title, List<String> tags, List<Criteria> criteriaRatings) {
         Item item = new Item();
         item.setTitle(title);
-
+        
         itemRepository.save(item);
-
+    
         for (String tag : tags) {
             Tag newTag = new Tag();
             newTag.setTag(tag);
             newTag.setItem(item);
             tagRepository.save(newTag);
         }
-
+    
         for (Criteria criteria : criteriaRatings) {
             criteria.setItem(item);
             criteriaRepository.save(criteria);

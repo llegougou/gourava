@@ -1,5 +1,6 @@
 package fr.legouloan.gourava_backend.controller;
 
+import fr.legouloan.gourava_backend.dto.AddItemDto;
 import fr.legouloan.gourava_backend.model.Criteria;
 import fr.legouloan.gourava_backend.model.Item;
 import fr.legouloan.gourava_backend.service.ItemService;
@@ -15,8 +16,11 @@ public class ItemController {
     private ItemService itemService;
 
     @PostMapping("/addItem")
-    public Item addItem(@RequestParam String title, @RequestParam List<String> tags, @RequestParam List<Criteria> criteriaRatings) {
-        return itemService.addItem(title, tags, criteriaRatings);
+    public Item addItem(@RequestBody AddItemDto addItemDto) {
+        return itemService.addItem(
+                addItemDto.getTitle(),
+                addItemDto.getTags(),
+                addItemDto.getCriteriaRatings());
     }
 
     @GetMapping("/items")

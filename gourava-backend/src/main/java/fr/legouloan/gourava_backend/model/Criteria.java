@@ -3,7 +3,7 @@ package fr.legouloan.gourava_backend.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "criteria")
+@Table(name = "criterias")
 public class Criteria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
