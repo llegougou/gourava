@@ -1,12 +1,16 @@
 <div class="space-y-4 p-4 bg-background min-h-screen">
   <div class="flex justify-between items-center mb-4">
     <div>
-      <label for="tagFilter" class="block text-sm font-medium text-gray-600">Filter by Tag</label>
-      <select id="tagFilter" [(ngModel)]="selectedTag" (change)="onFilterChange()" class="p-2 border rounded-md">
-        <option value="">All Tags</option>
-        <option *ngFor="let tag of allTags" [value]="tag">{{ tag }}</option>
-      </select>
+      <label for="tagFilter" class="block text-sm font-medium text-gray-600">Filter by Tags</label>
+      <div id="tagFilter" class="space-y-2">
+        <label *ngFor="let tag of allTags" class="inline-flex items-center">
+          <input type="checkbox" [checked]="selectedTags.includes(tag)" 
+            (change)="onTagChange(tag, $event)" class="form-checkbox">
+          <span class="ml-2">{{ tag }}</span>
+        </label>
+      </div>
     </div>
+
     <div>
       <label for="sortBy" class="block text-sm font-medium text-gray-600">Sort by</label>
       <select id="sortBy" [(ngModel)]="sortBy" (change)="onSortChange()" class="p-2 border rounded-md">

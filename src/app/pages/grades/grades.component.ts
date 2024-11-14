@@ -27,7 +27,7 @@ export class GradesComponent {
   maxTags = 3;
   maxCriteria = 3;
   currentItem: Item | null = null;
-  selectedTag: string = '';
+  selectedTags: string[] = [];
   sortBy: string = 'title';
   allTags: string[] = [];
 
@@ -66,19 +66,19 @@ export class GradesComponent {
 
   filterItems(): void {
     let tempItems = [...this.items];
-
+  
     if (this.searchQuery) {
       tempItems = tempItems.filter(item =>
         this.matchSearchQuery(item, this.searchQuery)
       );
     }
-
-    if (this.selectedTag) {
+  
+    if (this.selectedTags.length > 0) {
       tempItems = tempItems.filter(item =>
-        item.tags.some(tag => tag.name === this.selectedTag)
+        this.selectedTags.some(tag => item.tags.some(itemTag => itemTag.name === tag))
       );
     }
-
+  
     this.filteredItems = this.sortItems(tempItems);
   }
 
@@ -110,11 +110,19 @@ export class GradesComponent {
     );
   }
 
-  onSearchChange(): void {
+  onTagChange(tag: string, event: any): void {
+    if (event.target.checked) {
+      this.selectedTags.push(tag);
+    } else {
+      const index = this.selectedTags.indexOf(tag);
+      if (index !== -1) {
+        this.selectedTags.splice(index, 1);
+      }
+    }
     this.filterItems(); 
   }
 
-  onFilterChange(): void {
+  onSearchChange(): void {
     this.filterItems(); 
   }
 
