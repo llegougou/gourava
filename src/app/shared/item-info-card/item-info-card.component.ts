@@ -1,10 +1,14 @@
-import { Component, Input, } from '@angular/core';
+import { Component, EventEmitter, Input, Output, } from '@angular/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { CommonModule } from '@angular/common';
 
 interface Criteria {
   name: string;
   rating: number;
+}
+
+interface Tag {
+  name: string
 }
 
 @Component({
@@ -15,10 +19,13 @@ interface Criteria {
   styleUrl: './item-info-card.component.scss'
 })
 export class ItemInfoCardComponent {
+  @Input() itemId: number = 0;
   @Input() title: string = '';
-  @Input() tags: string[] = [];
-  @Input() criteriaRatings: Criteria[] = [];
+  @Input() tags: Tag[] = [];
+  @Input() criterias: Criteria[] = [];
   @Input() showButtons: boolean = false;
+  @Output() delete = new EventEmitter<number>();
+  @Output() update = new EventEmitter<number>();
 
   renderStars(rating: number): string[] {
     const stars: string[] = [];
@@ -38,5 +45,13 @@ export class ItemInfoCardComponent {
     }
   
     return stars;
+  }
+
+  onDelete(): void {
+    this.delete.emit(this.itemId);
+  }
+
+  onUpdate(): void {
+    this.update.emit(this.itemId);
   }
 }

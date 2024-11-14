@@ -1,24 +1,82 @@
 <div class="space-y-4 p-4 bg-background min-h-screen">
-    <gourava-item-info-card
-      [title]="'Spaghetti Bolognese'"
-      [tags]="['Italian', 'Pasta', 'Main Dish']"
-      [criteriaRatings]="[
-        { name: 'Taste', rating: 9 },
-        { name: 'Presentation', rating: 4 },
-        { name: 'Value for Money', rating: 5 }
-      ]"
-      [showButtons]="true"
-    />
-    
-    <gourava-item-info-card
-      [title]="'Spaghetti Bolognese'"
-      [tags]="['Italian', 'Pasta', 'Main Dish']"
-      [criteriaRatings]="[
-        { name: 'Taste', rating: 4 },
-        { name: 'Presentation', rating: 4 },
-        { name: 'Value for Money', rating: 5 }
-      ]"
-      [showButtons]="false"
-    />
-
+  <div class="flex justify-between items-center mb-4">
+    <div>
+      <label for="tagFilter" class="block text-sm font-medium text-gray-600">Filter by Tag</label>
+      <select id="tagFilter" [(ngModel)]="selectedTag" (change)="onFilterChange()" class="p-2 border rounded-md">
+        <option value="">All Tags</option>
+        <option *ngFor="let tag of allTags" [value]="tag">{{ tag }}</option>
+      </select>
+    </div>
+    <div>
+      <label for="sortBy" class="block text-sm font-medium text-gray-600">Sort by</label>
+      <select id="sortBy" [(ngModel)]="sortBy" (change)="onSortChange()" class="p-2 border rounded-md">
+        <option value="title">Title</option>
+        <option value="rating">Rating</option>
+      </select>
+    </div>
   </div>
+
+  <div class="mb-4">
+    <input type="text" [(ngModel)]="searchQuery" (input)="onSearchChange()"
+      placeholder="Search by title, tags, or criteria" class="p-2 border rounded-md w-full" />
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
+    <div *ngFor="let item of filteredItems" class="my-4">
+      <gourava-item-info-card [title]="item.title" [tags]="item.tags" [criterias]="item.criterias" [showButtons]="true"
+        [itemId]="item.id" (delete)="deleteItem($event)" (update)="updateItem($event)" />
+    </div>
+  </div>
+
+  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white w-full max-w-lg p-6 rounded-md shadow-lg">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">Add New Item</h2>
+
+      <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()" class="space-y-4">
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600">Title</label>
+          <input formControlName="title" type="text" placeholder="Enter title"
+            class="w-full p-2 mt-1 border rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div formArrayName="tags"><label class="block text-sm font-medium text-gray-600 mb-1">Tags</label>
+          <div *ngFor="let tag of tags.controls; let i = index" class="flex items-center space-x-2 mb-2">
+            <input [formControlName]="i" placeholder="Enter tag"
+              class="w-full p-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
+            <button (click)="removeTag(i)" type="button" class="text-red-500 hover:text-red-700">Remove</button>
+          </div>
+          <button (click)="addTag()" type="button" [disabled]="tags.length >= maxTags"
+            class="text-blue-600 hover:text-blue-800 text-sm" *ngIf="tags.length < maxTags"
+            [attr.title]="tags.length >= maxTags ? 'Maximum 3 tags allowed' : ''">
+            + Add Tag
+          </button>
+        </div>
+
+        <div formArrayName="criterias"><label class="block text-sm font-medium text-gray-600 mb-1">Criteria
+            Ratings</label>
+          <div *ngFor="let criteria of criterias.controls; let i = index" [formGroupName]="i"
+            class="flex items-center space-x-2 mb-2">
+            <input formControlName="name" placeholder="Criteria name"
+              class="w-1/2 p-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
+            <input formControlName="rating" type="number" min="0" max="10" placeholder="Rating"
+              class="w-1/4 p-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
+            <button (click)="removeCriteria(i)" type="button" class="text-red-500 hover:text-red-700">Remove</button>
+          </div>
+          <button (click)="addCriteria()" type="button" [disabled]="criterias.length >= maxCriteria"
+            class="text-blue-600 hover:text-blue-800 text-sm" *ngIf="criterias.length < maxCriteria"
+            [attr.title]="criterias.length >= maxCriteria ? 'Maximum 3 criteria allowed' : ''">
+            + Add Criteria
+          </button>
+        </div>
+
+        <div class="flex justify-end space-x-4 pt-4">
+          <button type="button" (click)="closeModal()"
+            class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-500">Save
+            Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

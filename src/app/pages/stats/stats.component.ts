@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-stats',
+  selector: 'gourava-stats',
   standalone: true,
   imports: [],
   templateUrl: './stats.component.html',

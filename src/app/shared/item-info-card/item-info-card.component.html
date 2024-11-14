@@ -2,20 +2,23 @@
     <div class="flex justify-between items-center mb-2">
       <h3 class="font-bold flex-1">{{ title }}</h3>
       <div *ngIf="showButtons" class="flex space-x-2">
-        <button class="w-9 h-9 rounded-full bg-primaryLight flex items-center justify-center">
+        <button (click)="onUpdate()" class="w-9 h-9 rounded-full bg-primaryLight flex items-center justify-center">
           <fa-icon [icon]="'pen'" class="text-neutral"></fa-icon>
         </button>
-        <button class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
+        <button 
+          (click)="onDelete()" 
+          class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center"
+        >
           <fa-icon [icon]="'trash'" class="text-neutral"></fa-icon>
         </button>
       </div>
     </div>
   
     <div class="flex justify-center space-x-2 my-2">
-      <span *ngFor="let tag of tags" class="rounded-full bg-accent px-3 py-1 text-sm text-black">{{ tag }}</span>
+      <span *ngFor="let tag of tags" class="rounded-full bg-accent px-3 py-1 text-sm text-black">{{ tag.name }}</span>
     </div>
   
-    <div *ngFor="let criteria of criteriaRatings" class="flex justify-between items-center py-1">
+    <div *ngFor="let criteria of criterias" class="flex justify-between items-center py-1">
       <span class="text-sm font-medium mr-2">{{ criteria.name }}</span>
       <div class="flex items-center space-x-1">
         <ng-container *ngFor="let star of renderStars(criteria.rating)">

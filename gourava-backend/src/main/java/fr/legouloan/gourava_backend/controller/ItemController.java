@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/gouravaApi")
 public class ItemController {
 
@@ -27,12 +28,12 @@ public class ItemController {
         return itemService.getItems(limit);
     }
 
-    @DeleteMapping("/deleteItems/{id}")
+    @DeleteMapping("/deleteItem/{id}")
     public void deleteItem(@PathVariable Long id) {
         itemService.deleteItem(id);
     }
 
-    @PutMapping("/updateItems/{id}")
+    @PutMapping("/updateItem/{id}")
     public Item updateItem(@PathVariable Long id, @RequestBody ItemDto updateItemDto) {
         return itemService.updateItem(
                 id,
