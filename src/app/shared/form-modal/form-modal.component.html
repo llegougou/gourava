@@ -20,7 +20,6 @@
             Remove
           </button>
         </div>
-        <!-- Add Tag Button: Only visible if there are less than maxTags -->
         <button *ngIf="tags.length < maxTags" type="button" (click)="addTag()"
           class="text-primary hover:text-primaryLight text-sm">
           + Add Tag
@@ -40,7 +39,6 @@
             Remove
           </button>
         </div>
-        <!-- Add Criteria Button: Only visible if there are less than maxCriteria -->
         <button *ngIf="criterias.length < maxCriteria" type="button" (click)="addCriteria()"
           class="text-primary hover:text-primaryLight text-sm">
           + Add Criteria
