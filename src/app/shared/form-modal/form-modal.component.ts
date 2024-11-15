@@ -111,7 +111,7 @@ export class FormModalComponent implements OnInit {
     if (this.itemForm.valid) {
       const formValues = this.itemForm.value;
       const formattedItem: Item = {
-        id: this.currentItem?.id || 0, // Retain existing ID for updates
+        id: this.currentItem?.id || 0,
         title: formValues.title,
         tags: formValues.tags.map((tag: string) => ({ name: tag })),
         criterias: formValues.criterias,
