@@ -76,7 +76,9 @@ export class GradesComponent {
   
     if (this.selectedTags.length > 0) {
       tempItems = tempItems.filter(item =>
-        this.selectedTags.some(tag => item.tags.some(itemTag => itemTag.name === tag))
+        this.selectedTags.every(tag =>
+          item.tags.some(itemTag => itemTag.name === tag)
+        )
       );
     }
   
