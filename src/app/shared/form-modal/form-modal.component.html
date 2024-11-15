@@ -1,0 +1,59 @@
+<div *ngIf="showModal" class="fixed inset-0 bg-neutral bg-opacity-50 flex items-center justify-center">
+    <div class="bg-background w-full max-w-lg p-6 rounded-md shadow-lg">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">
+        {{ currentItem ? 'Edit Item' : 'Add New Item' }}
+      </h2>
+  
+      <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-neutral">Title</label>
+          <input formControlName="title" type="text" placeholder="Enter title"
+            class="w-full p-2 mt-1 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+        </div>
+  
+        <div formArrayName="tags">
+          <label class="block text-sm font-medium text-neutral mb-1">Tags</label>
+          <div *ngFor="let tag of tags.controls; let i = index" class="flex items-center space-x-2 mb-2">
+            <input [formControlName]="i" placeholder="Enter tag"
+              class="w-full p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+            <button type="button" (click)="removeTag(i)" class="text-secondary hover:text-secondaryLight">
+              Remove
+            </button>
+          </div>
+          <button type="button" (click)="addTag()" [disabled]="tags.length >= maxTags"
+            class="text-primary hover:text-primaryLight text-sm">
+            + Add Tag
+          </button>
+        </div>
+  
+        <div formArrayName="criterias">
+          <label class="block text-sm font-medium text-neutral mb-1">Criteria Ratings</label>
+          <div *ngFor="let criteria of criterias.controls; let i = index" [formGroupName]="i" class="flex items-center space-x-2 mb-2">
+            <div class="flex flex-grow space-x-2">
+              <input formControlName="name" placeholder="Criteria name"
+                class="flex-grow p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+              <input formControlName="rating" type="number" min="0" max="10" placeholder="Rating"
+                class="w-24 p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+            </div>
+            <button type="button" (click)="removeCriteria(i)" class="text-secondary hover:text-secondaryLight">
+              Remove
+            </button>
+          </div>
+          <button type="button" (click)="addCriteria()" [disabled]="criterias.length >= maxCriteria"
+            class="text-primary hover:text-primaryLight text-sm">
+            + Add Criteria
+          </button>
+        </div>
+  
+        <div class="flex justify-end space-x-4 pt-4">
+          <button type="button" (click)="closeModal()" class="px-4 py-2 bg-background text-neutral rounded-md">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 bg-primary text-background rounded-md">
+            {{ currentItem ? 'Update Item' : 'Save Item' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

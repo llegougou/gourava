@@ -1,22 +1,27 @@
 import { Component } from '@angular/core';
-import { ItemService, Item } from '../../service/item.service';
+import { ItemService, Item, Tag, Criteria } from '../../service/item.service';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ItemInfoCardComponent } from '../../shared/item-info-card/item-info-card.component';
 import { CommonModule } from '@angular/common';
+import { FormModalComponent } from '../../shared/form-modal/form-modal.component';
+
 
 @Component({
   selector: 'gourava-home',
   standalone: true,
-  imports: [CommonModule, ItemInfoCardComponent, ReactiveFormsModule],
+  imports: [CommonModule, ItemInfoCardComponent, ReactiveFormsModule, FormModalComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
+
 export class HomeComponent {
   items: Item[] = [];
   addItemForm: FormGroup;
   showModal = false;
   maxTags = 3;
   maxCriteria = 3;
+  existingTags: Tag[] = [];
+  existingCriterias: Criteria[] = [];
 
   constructor(private itemService: ItemService, private fb: FormBuilder) {
     this.addItemForm = this.fb.group({
@@ -52,15 +57,42 @@ export class HomeComponent {
     });
   }
 
+  fetchExistingCriterias(limit: number): void {
+    this.itemService.getCriteriasStats(limit).subscribe({
+      next: (data) => {
+        this.existingCriterias = data;
+      },
+      error: (error) => {
+        console.error('Error fetching items:', error);
+      }
+    })
+  }
+
+  fetchExistingTags(limit: number): void {
+    this.itemService.getTagsStats(limit).subscribe({
+      next: (data) => {
+        this.existingTags = data;
+      },
+      error: (error) => {
+        console.error('Error fetching items:', error);
+      }
+    })
+  }
+
   openModal() {
     this.showModal = true;
   }
 
-  closeModal() {
+  closeModal(): void {
     this.showModal = false;
     this.resetForm();
   }
 
+  onSaveItem(item: Item): void {
+    this.itemService.createItem(item).subscribe(() => this.fetchItems(2));
+    this.closeModal();
+  }
+  
   resetForm() {
     this.addItemForm.reset();
     this.tags.clear();
@@ -72,57 +104,4 @@ export class HomeComponent {
     }));
   }
 
-  addTag() {
-    if (this.tags.length < this.maxTags) {
-      this.tags.push(this.fb.control(''));
-    }
-  }
-
-  addCriteria() {
-    if (this.criterias.length < this.maxCriteria) {
-      this.criterias.push(
-        this.fb.group({
-          name: ['', Validators.required],
-          rating: [0, [Validators.required, Validators.min(0), Validators.max(10)]]
-        })
-      );
-    }
-  }
-
-  removeTag(index: number) {
-    this.tags.removeAt(index);
-  }
-
-  removeCriteria(index: number) {
-    this.criterias.removeAt(index);
-  }
-
-  onSubmit() {
-    if (this.addItemForm.valid) {
-      const formValues = this.addItemForm.value;
-
-      const formattedTags = formValues.tags.map((tag: string) => ({ name: tag }));
-
-      const formattedCriterias = formValues.criterias.map((criteria: any) => ({
-        name: criteria.name,
-        rating: criteria.rating,
-      }));
-
-      const newItem: Item = {
-        id: 0,
-        title: formValues.title,
-        tags: formattedTags,
-        criterias: formattedCriterias,
-      };
-
-      this.itemService.createItem(newItem).subscribe({
-        next: (item) => {
-          this.fetchItems(2);
-          this.closeModal();
-          this.resetForm();
-        },
-        error: (error) => console.error('Error adding item:', error),
-      });
-    }
-  }
 }

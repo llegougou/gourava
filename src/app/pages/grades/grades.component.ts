@@ -4,6 +4,7 @@ import { ItemInfoCardComponent } from '../../shared/item-info-card/item-info-car
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormModalComponent } from '../../shared/form-modal/form-modal.component';
 
 interface Criteria {
   name: string;
@@ -13,7 +14,7 @@ interface Criteria {
 @Component({
   selector: 'gourava-grades',
   standalone: true,
-  imports: [ItemInfoCardComponent, CommonModule, ReactiveFormsModule,FormsModule],
+  imports: [ItemInfoCardComponent, CommonModule, ReactiveFormsModule, FormsModule, FormModalComponent],
   templateUrl: './grades.component.html',
   styleUrls: ['./grades.component.scss'],
 })
@@ -86,10 +87,14 @@ export class GradesComponent {
     return items.sort((a, b) => {
       if (this.sortBy === 'title') {
         return a.title.localeCompare(b.title);
-      } else if (this.sortBy === 'rating') {
+      } else if (this.sortBy === 'desc') {
         const avgRatingA = this.getAverageRating(a.criterias);
         const avgRatingB = this.getAverageRating(b.criterias);
         return avgRatingB - avgRatingA;  
+      }else if (this.sortBy === 'asc') {
+        const avgRatingA = this.getAverageRating(a.criterias);
+        const avgRatingB = this.getAverageRating(b.criterias);
+        return avgRatingA - avgRatingB;  
       }
       return 0;
     });
@@ -110,16 +115,13 @@ export class GradesComponent {
     );
   }
 
-  onTagChange(tag: string, event: any): void {
-    if (event.target.checked) {
-      this.selectedTags.push(tag);
+  toggleTagSelection(tag: string): void {
+    if (this.selectedTags.includes(tag)) {
+      this.selectedTags = this.selectedTags.filter(selectedTag => selectedTag !== tag);
     } else {
-      const index = this.selectedTags.indexOf(tag);
-      if (index !== -1) {
-        this.selectedTags.splice(index, 1);
-      }
+      this.selectedTags.push(tag);
     }
-    this.filterItems(); 
+    this.filterItems();
   }
 
   onSearchChange(): void {
@@ -155,9 +157,17 @@ export class GradesComponent {
     this.showModal = true;
   }
 
-  closeModal() {
+  closeModal(): void {
     this.showModal = false;
+    this.currentItem = null;
     this.resetForm();
+  }
+
+  onSaveItem(item: Item): void {
+    if (item.id) {
+      this.itemService.updateItem(item.id, item).subscribe(() => this.fetchItems(0));
+    } 
+    this.closeModal();
   }
 
   resetForm() {
@@ -170,95 +180,13 @@ export class GradesComponent {
       rating: [0, [Validators.required, Validators.min(0), Validators.max(10)]]
     }));
   }
-
-  addTag() {
-    if (this.tags.length < this.maxTags) {
-      this.tags.push(this.fb.control(''));
-    }
-  }
-
-  addCriteria() {
-    if (this.criterias.length < this.maxCriteria) {
-      this.criterias.push(
-        this.fb.group({
-          name: ['', Validators.required],
-          rating: [0, [Validators.required, Validators.min(0), Validators.max(10)]]
-        })
-      );
-    }
-  }
-
-  removeTag(index: number) {
-    this.tags.removeAt(index);
-  }
-
-  removeCriteria(index: number) {
-    this.criterias.removeAt(index);
-  }
-
+  
   updateItem(itemId: number): void {
-    this.currentItem = this.items.find(item => item.id === itemId) || null;
-
-    if (this.currentItem) {
-      this.addItemForm.patchValue({
-        title: this.currentItem.title,
-      });
-
-      this.tags.clear();
-      this.criterias.clear();
-
-      this.currentItem.tags.forEach(tag => this.tags.push(this.fb.control(tag.name)));
-      this.currentItem.criterias.forEach(criteria => {
-        this.criterias.push(
-          this.fb.group({
-            name: [criteria.name, Validators.required],
-            rating: [criteria.rating, [Validators.required, Validators.min(0), Validators.max(10)]],
-          })
-        );
-      });
-
+    const itemToEdit = this.items.find(item => item.id === itemId);
+  
+    if (itemToEdit) {
+      this.currentItem = itemToEdit;
       this.showModal = true;
-    }
-  }
-
-  onSubmit() {
-    if (this.addItemForm.valid) {
-      const formValues = this.addItemForm.value;
-
-      const formattedTags = formValues.tags.map((tag: string) => ({ name: tag }));
-
-      const formattedCriterias = formValues.criterias.map((criteria: any) => ({
-        name: criteria.name,
-        rating: criteria.rating,
-      }));
-
-      const updatedItem: Item = {
-        id: this.currentItem ? this.currentItem.id : 0, 
-        title: formValues.title,
-        tags: formattedTags,
-        criterias: formattedCriterias,
-      };
-
-      if (this.currentItem) {
-        this.itemService.updateItem(this.currentItem.id, updatedItem).subscribe({
-          next: (item) => {
-            this.fetchItems(0);
-            this.closeModal();
-            this.resetForm();
-            this.currentItem = null; 
-          },
-          error: (error) => console.error('Error updating item:', error),
-        });
-      } else {
-        this.itemService.createItem(updatedItem).subscribe({
-          next: (item) => {
-            this.fetchItems(0);
-            this.closeModal();
-            this.resetForm();
-          },
-          error: (error) => console.error('Error adding item:', error),
-        });
-      }
     }
   }
 }

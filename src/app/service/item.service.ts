@@ -5,9 +5,20 @@ import { Observable } from 'rxjs';
 export interface Item {
   id: number;
   title: string;
-  tags: {name:string} [];
-  criterias: { name: string; rating: number }[];
+  tags: Tag[];
+  criterias: Criteria[];
 }
+
+export interface Tag {
+  id: number;
+  name: string
+}
+
+export interface Criteria {
+  id: number;
+  name: string;
+  rating: number
+} 
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +37,7 @@ export class ItemService {
   constructor(private http: HttpClient) {}
 
   getItems(limit: number = 0): Observable<Item[]> {
-    const params = new HttpParams().set('limit', limit.toString()); // Adding 'limit' query param
+    const params = new HttpParams().set('limit', limit.toString());
 
     return this.http.get<Item[]>(this.apiReadUrl, { params });
   }
@@ -45,20 +56,24 @@ export class ItemService {
     return this.http.delete<void>(url, this.getHttpOptions());
   }
 
-  getTagsStats(): Observable<any> {
-    return this.http.get<any>(this.apiTagsStatsUrl);
+  getTagsStats(limit: number = 0): Observable<any> {
+    const params = new HttpParams().set('limit', limit.toString());
+    return this.http.get<any>(this.apiTagsStatsUrl, { params });
   }
 
-  getTagsStatsRandom(): Observable<any> {
-    return this.http.get<any>(this.apiTagsStatsRandomUrl);
+  getTagsStatsRandom(limit: number = 0): Observable<any> {
+    const params = new HttpParams().set('limit', limit.toString());
+    return this.http.get<any>(this.apiTagsStatsRandomUrl, { params });
   }
 
-  getCriteriasStats(): Observable<any> {
-    return this.http.get<any>(this.apiCriteriasStatsUrl);
+  getCriteriasStats(limit: number = 0): Observable<any> {
+    const params = new HttpParams().set('limit', limit.toString());
+    return this.http.get<any>(this.apiCriteriasStatsUrl, { params });
   }
 
-  getCriteriasStatsRandom(): Observable<any> {
-    return this.http.get<any>(this.apiCriteriasStatsRandomUrl);
+  getCriteriasStatsRandom(limit: number = 0): Observable<any> {
+    const params = new HttpParams().set('limit', limit.toString());
+    return this.http.get<any>(this.apiCriteriasStatsRandomUrl, { params });
   }
 
   private getHttpOptions() {

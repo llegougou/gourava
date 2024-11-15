@@ -9,6 +9,7 @@ import fr.legouloan.gourava_backend.repository.CriteriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Collections;
 
 @Service
 public class ItemService {
@@ -40,7 +41,15 @@ public class ItemService {
     }
 
     public List<Item> getItems(int limit) {
-        return limit > 0 ? itemRepository.findAll().stream().limit(limit).toList() : itemRepository.findAll();
+        List<Item> items = itemRepository.findAll();
+    
+        if (limit > 0) {
+            Collections.shuffle(items); 
+            return items.stream().limit(limit).toList();
+        }
+        
+        
+        return items;
     }
 
     public void deleteItem(Long id) {
@@ -69,18 +78,34 @@ public class ItemService {
     }
 
     public List<Object[]> getTagUsageCount(int limit) {
-        return tagRepository.findTagUsageCount(limit);
+        if (limit == 0) {
+            return tagRepository.findAllTagUsageCount();
+        } else {
+            return tagRepository.findLimitedTagUsageCount(limit);
+        }
     }
 
     public List<Object[]> getTagUsageCountRandom(int limit){
-        return tagRepository.findTagUsageCountRandom(limit);
+        if (limit == 0) {
+            return tagRepository.findAllTagUsageCountRandom();
+        } else {
+            return tagRepository.findLimitedTagUsageCountRandom(limit);
+        }
     }
 
     public List<Object[]> getCriteriaUsageCount(int limit) {
-        return criteriaRepository.findCriteriaUsageCount(limit);
+        if (limit == 0) {
+            return criteriaRepository.findAllCriteriaUsageCount();
+        } else {
+            return criteriaRepository.findLimitedCriteriaUsageCount(limit);
+        }
     }
 
     public List<Object[]> getCriteriaUsageCountRandom(int limit) {
-        return criteriaRepository.findCriteriaUsageCountRandom(limit);
+        if (limit == 0) {
+            return criteriaRepository.findAllCriteriaUsageCountRandom();
+        } else {
+            return criteriaRepository.findLimitedCriteriaUsageCountRandom(limit);
+        }
     }
 }
