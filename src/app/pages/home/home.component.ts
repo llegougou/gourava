@@ -5,6 +5,10 @@ import { ItemInfoCardComponent } from '../../shared/item-info-card/item-info-car
 import { CommonModule } from '@angular/common';
 import { FormModalComponent } from '../../shared/form-modal/form-modal.component';
 
+interface UsageCount {
+  name: string;
+  usage_count: number;
+}
 
 @Component({
   selector: 'gourava-home',
@@ -20,8 +24,10 @@ export class HomeComponent {
   showModal = false;
   maxTags = 3;
   maxCriteria = 3;
-  existingTags: Tag[] = [];
-  existingCriterias: Criteria[] = [];
+  existingTags: string[] = [];
+  existingCriterias: string[] = [];
+  tagsUsageCount: UsageCount[] = [];
+  criteriasUsageCount: UsageCount[] = [];
 
   constructor(private itemService: ItemService, private fb: FormBuilder) {
     this.addItemForm = this.fb.group({
@@ -36,6 +42,11 @@ export class HomeComponent {
     });
 
     this.fetchItems(2);
+  }
+
+  ngOnInit(): void {
+    this.fetchTagsUsageCount(5);
+    this.fetchCriteriasUsageCount(5);
   }
 
   get tags() {
@@ -57,10 +68,13 @@ export class HomeComponent {
     });
   }
 
-  fetchExistingCriterias(limit: number): void {
-    this.itemService.getCriteriasStats(limit).subscribe({
-      next: (data) => {
-        this.existingCriterias = data;
+  fetchCriteriasUsageCount(limit: number): void {
+    this.itemService.getCriteriasStatsRandom(limit).subscribe({
+      next: (criterias: any[]) => {
+        this.criteriasUsageCount = criterias.map(criteria => ({
+          name: criteria[0],
+          usage_count: criteria[1],
+        }));
       },
       error: (error) => {
         console.error('Error fetching items:', error);
@@ -68,10 +82,13 @@ export class HomeComponent {
     })
   }
 
-  fetchExistingTags(limit: number): void {
-    this.itemService.getTagsStats(limit).subscribe({
-      next: (data) => {
-        this.existingTags = data;
+  fetchTagsUsageCount(limit: number): void {
+    this.itemService.getTagsStatsRandom(limit).subscribe({
+      next: (tags: any[]) => {
+        this.tagsUsageCount = tags.map(tag => ({
+          name: tag[0],
+          usage_count: tag[1],
+        }));
       },
       error: (error) => {
         console.error('Error fetching items:', error);

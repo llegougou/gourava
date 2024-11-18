@@ -1,15 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ItemService, Item } from '../../service/item.service';
+import { ItemService, Item, Criteria } from '../../service/item.service';
 import { ItemInfoCardComponent } from '../../shared/item-info-card/item-info-card.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormModalComponent } from '../../shared/form-modal/form-modal.component';
-
-interface Criteria {
-  name: string;
-  rating: number;
-}
 
 @Component({
   selector: 'gourava-grades',
@@ -170,6 +165,13 @@ export class GradesComponent {
       this.itemService.updateItem(item.id, item).subscribe(() => this.fetchItems(0));
     } 
     this.closeModal();
+  }
+
+  resetFilters(): void {
+    this.selectedTags = [];
+    this.searchQuery = '';  
+    this.sortBy = 'title';  
+    this.filterItems();   
   }
 
   resetForm() {

@@ -1,32 +1,37 @@
 <div class="space-y-4 p-4 bg-background min-h-screen">
-<!-- Filter + Sort -->
-<div class="flex justify-between items-center mb-4">
+  
+  <!-- Filter + Sort -->
+  <div class="flex justify-between items-center mb-4">
 
-  <!-- Filter -->
-  <div>
-    <label for="tagFilter" class="block text-sm font-medium text-neutral mb-2">Filter by Tags</label>
-    <div id="tagFilter" class="flex flex-wrap gap-2">
-      <button *ngFor="let tag of allTags" 
-      (click)="toggleTagSelection(tag)"
-        [class.bg-primary]="selectedTags.includes(tag)" 
-        [class.text-background]="selectedTags.includes(tag)"
-        [class.bg-background]="!selectedTags.includes(tag)" 
-        [class.text-primary]="!selectedTags.includes(tag)"
-        class="px-3 py-1 rounded-md border border-neutral hover:bg-primary hover:text-background transition">
-        {{ tag }}
-      </button>
+    <!-- Filter -->
+    <div>
+      <label for="tagFilter" class="block text-sm font-medium text-neutral mb-2">Filter by Tags</label>
+      <div id="tagFilter" class="flex flex-wrap gap-2">
+        <button *ngFor="let tag of allTags" (click)="toggleTagSelection(tag)"
+          [class.bg-primary]="selectedTags.includes(tag)" [class.text-background]="selectedTags.includes(tag)"
+          [class.bg-background]="!selectedTags.includes(tag)" [class.text-primary]="!selectedTags.includes(tag)"
+          class="px-3 py-1 rounded-md border border-neutral hover:bg-primary hover:text-background transition">
+          {{ tag }}
+        </button>
+
+        <!-- Reset Filters Button -->
+        <button (click)="resetFilters()"
+          class="px-3 py-1 rounded-md bg-secondary text-background hover:bg-secondaryLight transition">
+          Reset Filters
+        </button>
+      </div>
     </div>
-  </div>
 
-  <!-- Sort -->
-  <div>
-    <label for="sortBy" class="block text-sm font-medium text-neutral">Sort by</label>
+    <!-- Sort -->
+    <div>
+      <label for="sortBy" class="block text-sm font-medium text-neutral">Sort by</label>
       <select id="sortBy" [(ngModel)]="sortBy" (change)="onSortChange()" class="p-2 border rounded-md">
         <option value="title">Title</option>
         <option value="asc">Rating Asc</option>
         <option value="desc">Rating Desc</option>
       </select>
     </div>
+
   </div>
 
   <!-- Search -->
@@ -44,10 +49,7 @@
   </div>
 
   <!-- Modal -->
-  <gourava-form-modal
-  [showModal]="showModal"
-  [currentItem]="currentItem"
-  (close)="closeModal()"
-  (save)="onSaveItem($event)"/>
+  <gourava-form-modal [showModal]="showModal" [currentItem]="currentItem" (close)="closeModal()"
+    (save)="onSaveItem($event)" />
 
 </div>

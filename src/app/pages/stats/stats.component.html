@@ -1,1 +1,50 @@
-<p>stats works!</p>
+<div class="p-6">
+    
+    <div class="flex space-x-8">
+        
+        <!-- Tags Table -->
+        <div class="overflow-x-auto w-1/2">
+            <table class="table-auto border-collapse border border-neutral w-full">
+                <thead>
+                    <tr class="bg-primaryLight">
+                        <th class="border border-neutral text-background px-4 py-2 text-left">Tags</th>
+                        <th class="border border-neutral text-background px-4 py-2 text-center w-20 ">Count</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let tag of allTags; let index = index" class="even:bg-backgroundAnti odd:bg-backgroundMid hover:bg-secondaryLight">
+                        <td class="border border-neutral px-4 py-2">
+                            {{ tag.name || '' }}
+                        </td>
+                        <td class="border border-neutral px-4 py-2 text-center"> 
+                            {{ tag.usage_count || '' }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Criterias Table -->
+        <div class="overflow-x-auto w-1/2">
+            <table class="table-auto border-collapse border border-neutral w-full">
+                <thead>
+                    <tr class="bg-primaryLight">
+                        <th class="border border-neutral text-background px-4 py-2 text-left">Criteria</th>
+                        <th class="border border-neutral text-background px-4 py-2 w-20 text-center">Count</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let criteria of allCriterias; let index = index" class="even:bg-backgroundAnti odd:bg-backgroundMid hover:bg-secondaryLight">
+                        <td class="border border-neutral px-4 py-2">
+                            {{ criteria.name || '' }}
+                        </td>
+                        <td class="border border-neutral px-4 py-2 text-center"> 
+                            {{ criteria.usage_count || '' }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
