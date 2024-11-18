@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'gourava-form-modal',
-  standalone:true,
+  standalone: true,
   templateUrl: './form-modal.component.html',
   styleUrls: ['./form-modal.component.scss'],
   imports: [ReactiveFormsModule, CommonModule]
@@ -13,12 +13,17 @@ import { CommonModule } from '@angular/common';
 export class FormModalComponent implements OnInit {
   @Input() showModal: boolean = false;
   @Input() currentItem: Item | null = null;
+  @Input() tagsList: string[] = [];
+  @Input() criteriasList: string[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<Item>();
 
   itemForm: FormGroup;
   maxTags = 3;
   maxCriteria = 3;
+
+  customTags: boolean[] = [];
+  customCriteria: boolean[] = [];
 
   constructor(private fb: FormBuilder) {
     this.itemForm = this.fb.group({
@@ -66,8 +71,14 @@ export class FormModalComponent implements OnInit {
 
     this.tags.clear();
     this.criterias.clear();
+    this.customTags = [];
+    this.customCriteria = [];
 
-    item.tags.forEach(tag => this.tags.push(this.fb.control(tag.name)));
+    item.tags.forEach(tag => {
+      this.tags.push(this.fb.control(tag.name));
+      this.customTags.push(false);
+    });
+
     item.criterias.forEach(criteria => {
       this.criterias.push(
         this.fb.group({
@@ -75,17 +86,20 @@ export class FormModalComponent implements OnInit {
           rating: [criteria.rating, [Validators.required, Validators.min(0), Validators.max(10)]],
         })
       );
+      this.customCriteria.push(false);
     });
   }
 
   addTag(): void {
     if (this.tags.length < this.maxTags) {
       this.tags.push(this.fb.control(''));
+      this.customTags.push(false);
     }
   }
 
   removeTag(index: number): void {
     this.tags.removeAt(index);
+    this.customTags.splice(index, 1);
   }
 
   addCriteria(): void {
@@ -96,11 +110,23 @@ export class FormModalComponent implements OnInit {
           rating: [0, [Validators.required, Validators.min(0), Validators.max(10)]]
         })
       );
+      this.customCriteria.push(false);
     }
   }
 
   removeCriteria(index: number): void {
     this.criterias.removeAt(index);
+    this.customCriteria.splice(index, 1);
+  }
+
+  selectCustomTag(index: number): void {
+    this.customTags[index] = true;
+    this.tags.at(index).setValue('');
+  }
+
+  selectCustomCriteria(index: number): void {
+    this.customCriteria[index] = true;
+    this.criterias.at(index).get('name')?.setValue('');
   }
 
   closeModal(): void {
@@ -119,5 +145,4 @@ export class FormModalComponent implements OnInit {
       this.save.emit(formattedItem);
     }
   }
-  
 }

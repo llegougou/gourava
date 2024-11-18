@@ -13,12 +13,28 @@
 
       <div formArrayName="tags">
         <label class="block text-sm font-medium text-neutral mb-1">Tags</label>
-        <div *ngFor="let tag of tags.controls; let i = index" class="flex items-center space-x-2 mb-2">
-          <input [formControlName]="i" placeholder="Enter tag"
-            class="w-full p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
-          <button type="button" (click)="removeTag(i)" class="text-secondary hover:text-secondaryLight">
-            Remove
-          </button>
+        <div *ngFor="let tag of tags.controls; let i = index" class="mb-2">
+          <ng-container *ngIf="!customTags[i]; else customTagInput">
+            <div class="flex items-center space-x-2">
+              <select [formControlName]="i" (change)="tags.at(i).value === 'Custom' && selectCustomTag(i)"
+                class="w-full p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+                <option *ngFor="let tagOption of tagsList" [value]="tagOption">{{ tagOption }}</option>
+                <option value="Custom">Create Custom Tag</option>
+              </select>
+              <button type="button" (click)="removeTag(i)" class="text-secondary hover:text-secondaryLight">
+                Remove
+              </button>
+            </div>
+          </ng-container>
+          <ng-template #customTagInput>
+            <div class="flex items-center space-x-2">
+              <input [formControlName]="i" type="text" placeholder="Enter custom tag"
+                class="w-full p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+              <button type="button" (click)="removeTag(i)" class="text-secondary hover:text-secondaryLight">
+                Remove
+              </button>
+            </div>
+          </ng-template>
         </div>
         <button *ngIf="tags.length < maxTags" type="button" (click)="addTag()"
           class="text-primary hover:text-primaryLight text-sm">
@@ -28,16 +44,32 @@
 
       <div formArrayName="criterias">
         <label class="block text-sm font-medium text-neutral mb-1">Criteria Ratings</label>
-        <div *ngFor="let criteria of criterias.controls; let i = index" [formGroupName]="i" class="flex items-center space-x-2 mb-2">
-          <div class="flex flex-grow space-x-2">
-            <input formControlName="name" placeholder="Criteria name"
-              class="flex-grow p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
-            <input formControlName="rating" type="number" min="0" max="10" placeholder="Rating"
-              class="w-24 p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
-          </div>
-          <button type="button" (click)="removeCriteria(i)" class="text-secondary hover:text-secondaryLight">
-            Remove
-          </button>
+        <div *ngFor="let criteria of criterias.controls; let i = index" [formGroupName]="i" class="mb-2">
+          <ng-container *ngIf="!customCriteria[i]; else customCriteriaInput">
+            <div class="flex items-center space-x-2">
+              <select formControlName="name" (change)="criterias.at(i).get('name')?.value === 'Custom' && selectCustomCriteria(i)"
+                class="flex-grow p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+                <option *ngFor="let criteriaOption of criteriasList" [value]="criteriaOption">{{ criteriaOption }}</option>
+                <option value="Custom">Create Custom Criteria</option>
+              </select>
+              <input formControlName="rating" type="number" min="0" max="10" placeholder="Rating"
+                class="w-24 p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+              <button type="button" (click)="removeCriteria(i)" class="text-secondary hover:text-secondaryLight">
+                Remove
+              </button>
+            </div>
+          </ng-container>
+          <ng-template #customCriteriaInput>
+            <div class="flex items-center space-x-2">
+              <input formControlName="name" type="text" placeholder="Enter custom criteria"
+                class="flex-grow p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+              <input formControlName="rating" type="number" min="0" max="10" placeholder="Rating"
+                class="w-24 p-2 border rounded-md border-neutral focus:ring-2 focus:ring-primary">
+              <button type="button" (click)="removeCriteria(i)" class="text-secondary hover:text-secondaryLight">
+                Remove
+              </button>
+            </div>
+          </ng-template>
         </div>
         <button *ngIf="criterias.length < maxCriteria" type="button" (click)="addCriteria()"
           class="text-primary hover:text-primaryLight text-sm">

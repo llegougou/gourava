@@ -47,6 +47,8 @@ export class HomeComponent {
   ngOnInit(): void {
     this.fetchTagsUsageCount(5);
     this.fetchCriteriasUsageCount(5);
+    this.fetchTagsList();
+    this.fetchCriteriasList();
   }
 
   get tags() {
@@ -82,6 +84,18 @@ export class HomeComponent {
     })
   }
 
+  fetchCriteriasList(): void {
+    this.itemService.getCriteriasStats(0).subscribe({
+      next: (criterias: any[]) => {
+        this.existingCriterias = criterias.map(criteria =>
+          criteria[0]);
+      },
+      error: (error) => {
+        console.error('Error fetching items:', error);
+      }
+    })
+  }
+
   fetchTagsUsageCount(limit: number): void {
     this.itemService.getTagsStatsRandom(limit).subscribe({
       next: (tags: any[]) => {
@@ -94,6 +108,17 @@ export class HomeComponent {
         console.error('Error fetching items:', error);
       }
     })
+  }
+
+  fetchTagsList(): void {
+    this.itemService.getTagsStats(0).subscribe({
+      next: (tags: any[]) => {
+        this.existingTags = tags.map(tag => tag[0]);
+      },
+      error: (error) => {
+        console.error('Error fetching tags:', error);
+      }
+    });
   }
 
   openModal() {
@@ -109,7 +134,7 @@ export class HomeComponent {
     this.itemService.createItem(item).subscribe(() => this.fetchItems(2));
     this.closeModal();
   }
-  
+
   resetForm() {
     this.addItemForm.reset();
     this.tags.clear();

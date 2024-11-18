@@ -24,8 +24,8 @@
     </ng-container>
   </div>
 
+  <!-- Stats Tables -->
   <div class="flex space-x-8">
-
     <!-- Tags Table -->
     <div class="overflow-x-auto w-1/2">
       <table class="table-auto border-collapse border border-neutral w-full">
@@ -71,10 +71,9 @@
         </tbody>
       </table>
     </div>
-
   </div>
 
   <!-- Modal -->
-  <gourava-form-modal [showModal]="showModal" (close)="closeModal()" (save)="onSaveItem($event)" />
+  <gourava-form-modal [showModal]="showModal" (close)="closeModal()" (save)="onSaveItem($event)" [tagsList]="existingTags" [criteriasList]="existingCriterias" />
 
 </div>

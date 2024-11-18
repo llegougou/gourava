@@ -26,6 +26,7 @@ export class GradesComponent {
   selectedTags: string[] = [];
   sortBy: string = 'title';
   allTags: string[] = [];
+  allCriterias: string[] = [];
 
   constructor(private itemService: ItemService, private fb: FormBuilder) {
     this.addItemForm = this.fb.group({
@@ -47,6 +48,7 @@ export class GradesComponent {
       next: (data) => {
         this.items = data;
         this.allTags = this.getAllTags();
+        this.allCriterias = this.getAllCriterias();
         this.filterItems();
       },
       error: (error) => {
@@ -58,6 +60,11 @@ export class GradesComponent {
   getAllTags(): string[] {
     const tags = this.items.flatMap(item => item.tags.map(tag => tag.name));
     return Array.from(new Set(tags));
+  }
+
+  getAllCriterias(): string[] {
+    const criterias = this.items.flatMap(item => item.criterias.map(criteria => criteria.name));
+    return Array.from(new Set(criterias));
   }
 
   filterItems(): void {
