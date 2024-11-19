@@ -17,6 +17,8 @@ import { FormModalComponent } from '../../shared/form-modal/form-modal.component
 export class GradesComponent {
   items: Item[] = [];
   filteredItems: Item[] = []; 
+  leftColumnItems: Item[] = [];
+  rightColumnItems: Item[] = [];
   searchQuery: string = '';
   addItemForm: FormGroup;
   showModal = false;
@@ -85,19 +87,31 @@ export class GradesComponent {
     }
   
     this.filteredItems = this.sortItems(tempItems);
+    this.splitItemsIntoColumns();
+  }
+
+  splitItemsIntoColumns(): void {
+    this.leftColumnItems = [];
+    this.rightColumnItems = [];
+
+    this.filteredItems.forEach((item, index) => {
+      if (index % 2 === 0) {
+        this.leftColumnItems.push(item);
+      } else {
+        this.rightColumnItems.push(item);
+      }
+    });
   }
 
   sortItems(items: Item[]): Item[] {
     return items.sort((a, b) => {
+      const avgRatingA = this.getAverageRating(a.criterias);
+      const avgRatingB = this.getAverageRating(b.criterias);
       if (this.sortBy === 'title') {
         return a.title.localeCompare(b.title);
       } else if (this.sortBy === 'desc') {
-        const avgRatingA = this.getAverageRating(a.criterias);
-        const avgRatingB = this.getAverageRating(b.criterias);
         return avgRatingB - avgRatingA;  
       }else if (this.sortBy === 'asc') {
-        const avgRatingA = this.getAverageRating(a.criterias);
-        const avgRatingB = this.getAverageRating(b.criterias);
         return avgRatingA - avgRatingB;  
       }
       return 0;
@@ -133,7 +147,8 @@ export class GradesComponent {
   }
 
   onSortChange(): void {
-    this.filteredItems = this.sortItems(this.filteredItems);  
+    this.filteredItems = this.sortItems(this.filteredItems);
+    this.splitItemsIntoColumns();
   }
 
   deleteItem(id: number): void {
